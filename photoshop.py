@@ -8,6 +8,8 @@ from tkinter.filedialog import askopenfilename, asksaveasfilename
 from PIL import Image, ImageTk, ImageFilter, ImageEnhance, ImageOps
 import os
 
+from teste import brightness
+
 class Photoshop(tk.Tk):
     def __init__(self):
         # Calling super method
@@ -37,12 +39,22 @@ class Photoshop(tk.Tk):
         self.buttonExit.place(x=460, y=595)
 
         # Setting Tools for the editor
+
+        #Setting the Blurr effect
         self.blurrLabel = tk.Label(self, text="Blur:", font=("ariel 17 bold"), width=9, anchor='e')
         self.blurrLabel.place(x=15, y=8)
         self.blurrValue = tk.DoubleVar()
         self.blurrSlider = ttk.Scale(self, from_=0, to=10, variable=self.blurrValue, orient=HORIZONTAL)
         self.blurrSlider['command'] = self.blurr
         self.blurrSlider.place(x=150, y=10)
+
+        #Setting the Brightness effect
+        self.brightnessLabel = tk.Label(self, text="Brightness:", font=("ariel 17 bold"), width=9, anchor='e')
+        self.brightnessLabel.place(x=15, y=48)
+        self.brightnessValue = tk.DoubleVar()
+        self.brightnessSlider = ttk.Scale(self, from_=0, to=10, variable=self.brightnessValue, orient=HORIZONTAL)
+        self.brightnessSlider['command'] = self.brightness
+        self.brightnessSlider.place(x=150, y=50) 
 
         # Setting Canvas to display image
         self.canvas = Canvas(self, width="600", height="420", relief=RIDGE, bd=2)
@@ -55,7 +67,15 @@ class Photoshop(tk.Tk):
             self.canvas.create_image(300, 210, image=self.img)
             self.canvas.image = self.img
 
-    
+    def brightness(self):  # The brightness effect
+        for m in range(0, self.brightnessValue.get()+1):
+            img = ImageEnhance.Brightness(self.img)
+            img = img.enhance(m)
+            self.img = ImageTk.PhotoImage(img)
+            self.canvas.create_image(300, 210, image=self.img)
+            self.canvas.image = self.img
+
+
     def selectImage(self):
         self.img_path = filedialog.askopenfilename(initialdir=os.getcwd())
         self.img = Image.open(self.img_path)
